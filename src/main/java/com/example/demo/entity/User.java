@@ -21,55 +21,54 @@ public class User {
     private Long id;
 
     @Column(nullable = false, unique = true, length = 20)
-    private String username;  // Tên người dùng, duy nhất, tối đa 20 ký tự
+    private String username;
 
-    @Column(nullable = true, unique = true, length = 255)
-    private String email;  // Email người dùng, duy nhất, tối đa 255 ký tự
-
-    @Column(nullable = false)
-    private String password;  // Mật khẩu người dùng
+    @Column(nullable = false, unique = true, length = 255)
+    private String email;
 
     @Column(nullable = false)
-    private String firstName;  // Tên người dùng
+    private String password;
 
     @Column(nullable = false)
-    private String lastName;  // Họ người dùng
+    private String firstName;
 
-    private LocalDate dob;  // Ngày sinh của người dùng
+    @Column(nullable = false)
+    private String lastName;
+
+    private LocalDate dob;
 
     @Column(name = "avatar_url", nullable = true)
-    private String avatarUrl;  // Đường dẫn đến ảnh đại diện
+    private String avatarUrl;
 
     @Column(nullable = true)
-    private String bio;  // Tiểu sử ngắn gọn
+    private String bio;
 
     @Column(name = "followers_count", nullable = false)
-    private int followersCount = 0;  // Số người theo dõi
+    private int followersCount = 0;
 
     @Column(name = "following_count", nullable = false)
-    private int followingCount = 0;  // Số người đang theo dõi
+    private int followingCount = 0;
 
     @Column(name = "posts_count", nullable = false)
-    private int postsCount = 0;  // Số bài viết của người dùng
+    private int postsCount = 0;
+
+    @Column(name = "role", nullable = false)
+    private String role = "USER"; // Giá trị mặc định là USER, có thể là ADMIN
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDate createdAt;  // Thời gian tạo tài khoản
+    private LocalDate createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    private LocalDate updatedAt;  // Thời gian cập nhật tài khoản
+    private LocalDate updatedAt;
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Post> posts = new ArrayList<>();
-
-    // Thêm các phương thức để tự động cập nhật thời gian createdAt và updatedAt
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDate.now();  // Thiết lập createdAt trước khi lưu vào cơ sở dữ liệu
-        this.updatedAt = LocalDate.now();  // Thiết lập updatedAt trước khi lưu vào cơ sở dữ liệu
+        this.createdAt = LocalDate.now();
+        this.updatedAt = LocalDate.now();
     }
 
     @PreUpdate
     public void preUpdate() {
-        this.updatedAt = LocalDate.now();  // Thiết lập updatedAt mỗi khi cập nhật
+        this.updatedAt = LocalDate.now();
     }
 }

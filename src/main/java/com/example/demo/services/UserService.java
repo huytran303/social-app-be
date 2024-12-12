@@ -64,6 +64,10 @@ public class UserService {
         if (request.getDob() != null) {
             user.setDob(request.getDob());
         }
+
+        if (request.getBio() != null) {
+            user.setBio(request.getBio());
+        }
         if (request.getPassword() != null) {
             // Mã hóa mật khẩu mới trước khi lưu
             user.setPassword(passwordEncoder.encode(request.getPassword()));

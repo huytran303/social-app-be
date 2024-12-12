@@ -19,4 +19,5 @@ public class UserCreationRequest {
     LocalDate dob;
     @Size(min = 8, max = 20, message = "PASSWORD_INVALID")
     String password;
+    String role = "USER";
 }

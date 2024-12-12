@@ -11,6 +11,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     @Mapping(source = "email", target = "email")
+    @Mapping(target = "role", defaultValue = "USER")
     User toUser(UserCreationRequest request);
     UserResponse toUserResponse(User user);
     void updateUser(@MappingTarget User user, UserUpdateRequest request);

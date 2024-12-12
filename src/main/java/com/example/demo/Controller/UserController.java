@@ -6,6 +6,9 @@ import com.example.demo.dto.response.APIResponse;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.services.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -73,5 +76,27 @@ public class UserController {
         }
         return response;
     }
+    // UserController.java
+    @PostMapping("/logout")
+    APIResponse<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        // Get the token cookie
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("token".equals(cookie.getName())) {
+                    // Delete the token cookie
+                    cookie.setValue("");
+                    cookie.setPath("/");
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+                    break;
+                }
+            }
+        }
 
+        APIResponse<String> apiResponse = new APIResponse<>();
+        apiResponse.setCode(1000);
+        apiResponse.setMessage("Logged out successfully");
+        return apiResponse;
+    }
 }
