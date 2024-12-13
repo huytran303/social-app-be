@@ -5,7 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -29,10 +30,10 @@ public class Post {
     private String imageUrl;  // Đường dẫn đến ảnh trong bài viết (Tùy chọn)
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDate createdAt;  // Ngày đăng bài viết
+    private LocalDateTime createdAt;  // Thời gian đăng bài viết
 
     @Column(name = "updated_at", nullable = false)
-    private LocalDate updatedAt;  // Ngày cập nhật bài viết
+    private LocalDateTime updatedAt;  // Thời gian cập nhật bài viết
 
     @Column(name = "likes_count", nullable = false)
     private int likesCount = 0;  // Số lượt thích
@@ -43,12 +44,12 @@ public class Post {
     // Thêm các phương thức để tự động cập nhật thời gian createdAt và updatedAt
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDate.now();  // Thiết lập createdAt trước khi lưu vào cơ sở dữ liệu
-        this.updatedAt = LocalDate.now();  // Thiết lập updatedAt trước khi lưu vào cơ sở dữ liệu
+        this.createdAt = LocalDateTime.now();  // Thiết lập createdAt trước khi lưu vào cơ sở dữ liệu
+        this.updatedAt = LocalDateTime.now();  // Thiết lập updatedAt trước khi lưu vào cơ sở dữ liệu
     }
 
     @PreUpdate
     public void preUpdate() {
-        this.updatedAt = LocalDate.now();  // Thiết lập updatedAt mỗi khi cập nhật
+        this.updatedAt = LocalDateTime.now();  // Thiết lập updatedAt mỗi khi cập nhật
     }
 }
