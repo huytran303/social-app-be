@@ -1,7 +1,9 @@
-package com.example.demo.controller;
+package com.example.demo.Controller;
 
+import com.example.demo.dto.request.CommentCreationRequest;
 import com.example.demo.dto.request.PostCreationRequest;
 import com.example.demo.dto.response.APIResponse;
+import com.example.demo.entity.Comment;
 import com.example.demo.entity.Post;
 import com.example.demo.exceptions.AppException;
 import com.example.demo.services.PostService;
@@ -126,5 +128,35 @@ public class PostController {
         return response;
     }
 
+    // Thêm comment vào bài viết
+    @PostMapping("/{postId}/comments")
+    public APIResponse<Comment> addComment(@PathVariable Long postId, @RequestParam Long userId, @RequestBody @Valid CommentCreationRequest request) {
+        APIResponse<Comment> response = new APIResponse<>();
+        try {
+            Comment comment = postService.addComment(postId, userId, request);
+            response.setCode(1000);
+            response.setResult(comment);
+            response.setMessage("Comment added successfully");
+        } catch (AppException e) {
+            response.setCode(e.getErrorCode().getCode());
+            response.setMessage(e.getMessage());
+        }
+        return response;
+    }
 
+    // Lấy tất cả comment của bài viết
+    @GetMapping("/{postId}/comments")
+    public APIResponse<List<Comment>> getCommentsByPostId(@PathVariable Long postId) {
+        APIResponse<List<Comment>> response = new APIResponse<>();
+        try {
+            List<Comment> comments = postService.getCommentsByPostId(postId);
+            response.setCode(1000);
+            response.setResult(comments);
+            response.setMessage("Comments retrieved successfully");
+        } catch (AppException e) {
+            response.setCode(e.getErrorCode().getCode());
+            response.setMessage(e.getMessage());
+        }
+        return response;
+    }
 }

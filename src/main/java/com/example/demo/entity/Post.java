@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -17,39 +19,46 @@ public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  // Mã định danh bài viết
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;  // Mã người dùng đã đăng bài viết (liên kết với bảng Users)
+    private User user;
 
     @Column(nullable = false, length = 5000)
-    private String content;  // Nội dung bài viết
+    private String content;
 
     @Column(nullable = true)
-    private String imageUrl;  // Đường dẫn đến ảnh trong bài viết (Tùy chọn)
+    private String imageUrl;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;  // Thời gian đăng bài viết
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;  // Thời gian cập nhật bài viết
+    private LocalDateTime updatedAt;
 
     @Column(name = "likes_count", nullable = false)
-    private int likesCount = 0;  // Số lượt thích
+    private int likesCount = 0;
 
     @Column(name = "comments_count", nullable = false)
-    private int commentsCount = 0;  // Số lượng bình luận
+    private int commentsCount = 0;
 
-    // Thêm các phương thức để tự động cập nhật thời gian createdAt và updatedAt
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore  // Bỏ qua khi tuần tự hóa đối tượng Post sang JSON
+    private List<Comment> comments; // Chú ý bỏ qua danh sách bình luận khi tuần tự hóa Post
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore  // Bỏ qua danh sách lượt thích khi tuần tự hóa Post sang JSON
+    private List<Likes> likes;
+
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now();  // Thiết lập createdAt trước khi lưu vào cơ sở dữ liệu
-        this.updatedAt = LocalDateTime.now();  // Thiết lập updatedAt trước khi lưu vào cơ sở dữ liệu
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();  // Thiết lập updatedAt mỗi khi cập nhật
+        this.updatedAt = LocalDateTime.now();
     }
 }

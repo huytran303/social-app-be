@@ -53,8 +53,17 @@ public class UserController {
 //        return userService.getUserById(UserId);
     }
 
+    @GetMapping("/username/{Username}")
+    APIResponse<User> getUserByUsername(@PathVariable String Username) {
+        APIResponse<User> response = new APIResponse<>();
+        response.setCode(1000);
+        response.setResult(userService.getUserByUsername(Username));
+        response.setMessage("User get successfully");
+        return response;
+    }
+
     @PutMapping("/{UserId}")
-     APIResponse<User> updateUser(@PathVariable Long UserId, @RequestBody @Valid UserUpdateRequest request) {
+    APIResponse<User> updateUser(@PathVariable Long UserId, @RequestBody @Valid UserUpdateRequest request) {
         APIResponse<User> response = new APIResponse<>();
         response.setCode(1000);
         response.setResult(userService.updateUser(UserId, request));
@@ -63,7 +72,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{UserId}")
-     APIResponse<String> deleteUser(@PathVariable Long UserId) {
+    APIResponse<String> deleteUser(@PathVariable Long UserId) {
         APIResponse<String> response = new APIResponse<>();
         if(userService.getUserById(UserId) == null) {
             response.setCode(1005);

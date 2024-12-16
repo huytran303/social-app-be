@@ -1,12 +1,15 @@
 package com.example.demo.services;
 
+import com.example.demo.dto.request.CommentCreationRequest;
 import com.example.demo.dto.request.PostCreationRequest;
+import com.example.demo.entity.Comment;
 import com.example.demo.entity.Likes;
 import com.example.demo.entity.Post;
 import com.example.demo.entity.User;
 import com.example.demo.exceptions.AppException;
 import com.example.demo.exceptions.ErrorCode;
 import com.example.demo.mapper.PostMapper;
+import com.example.demo.repository.CommentRepository;
 import com.example.demo.repository.LikesRepository;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.UserRepository;
@@ -32,6 +35,9 @@ public class PostService {
 
     @Autowired
     private LikesRepository likesRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     public Post createPost(PostCreationRequest request) {
         User user = userRepository.findById(request.getUserId())
@@ -68,7 +74,6 @@ public class PostService {
         Post post = getPostById(id);
         postRepository.delete(post);
     }
-
 
     public List<Post> getPostsByUserId(Long userId) {
         User user = userRepository.findById(userId)
@@ -136,6 +141,32 @@ public class PostService {
         return existingLike != null;  // Nếu đã like thì trả về true, ngược lại false
     }
 
+
+    // Thêm comment vào bài viết
+    public Comment addComment(Long postId, Long userId, CommentCreationRequest request) {
+        // Tìm bài viết và người dùng
+        Post post = getPostById(postId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Tạo comment mới
+        Comment comment = Comment.builder()
+                .post(post)
+                .user(user)
+                .content(request.getContent())
+                .build();
+        // Cập nhật số lượng comment của bài viết
+        post.setCommentsCount(post.getCommentsCount() + 1);
+        postRepository.save(post);  // Lưu bài viết đã cập nhật
+
+        return commentRepository.save(comment);  // Lưu comment vào bảng Comment
+    }
+
+    // Lấy tất cả comment của bài viết
+    public List<Comment> getCommentsByPostId(Long postId) {
+        Post post = getPostById(postId);
+        return commentRepository.findByPost(post);
+    }
 
 
 }

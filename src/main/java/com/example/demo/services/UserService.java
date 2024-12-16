@@ -94,4 +94,13 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
+
+    // Lấy thông tin người dùng theo Username
+
+    public User getUserByUsername(String username) {
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return user;
+    }
+
 }
